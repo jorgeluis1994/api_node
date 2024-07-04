@@ -1,25 +1,36 @@
-exports.getAllUsers = async (ctx) => {
-    ctx.body = 'Obtener todos los usuarios';
-  };
-  
-  exports.getUserById = async (ctx) => {
-    const userId = ctx.params.id;
-    ctx.body = `Obtener usuario con ID: ${userId}`;
-  };
-  
-  exports.createUser = async (ctx) => {
-    const newUser = ctx.request.body;
-    ctx.body = `Crear nuevo usuario: ${JSON.stringify(newUser)}`;
-  };
-  
-  exports.updateUser = async (ctx) => {
-    const userId = ctx.params.id;
-    const updatedUser = ctx.request.body;
-    ctx.body = `Actualizar usuario con ID: ${userId}, Datos: ${JSON.stringify(updatedUser)}`;
-  };
-  
-  exports.deleteUser = async (ctx) => {
-    const userId = ctx.params.id;
-    ctx.body = `Eliminar usuario con ID: ${userId}`;
-  };
+
+const pool = require('../config/db');
+
+// Definición de un controlador para obtener todos los usuarios
+const getAllUsers = async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM users');
+    res.status(200).json(result.rows);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener los usuarios', error });
+  }
+};
+
+
+// Definición de un controlador para obtener los usuarios por Id
+const getUserById = async (req, res) => {
+  try {
+    let userId=req.body.idUser;
+    const result = await pool.query('SELECT * FROM users WHERE user_id = $1', [userId]);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener los usuarios', error });
+  }
+};
+
+
+
+
+
+// Exporta todos los controladores al final del archivo
+module.exports = {
+  getAllUsers,
+  getUserById
+};
+
   
